@@ -3,3 +3,4 @@ grauna-env/
 *.db
 show_dbs.py
 __pycache__/
+.env
