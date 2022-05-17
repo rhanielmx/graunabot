@@ -45,23 +45,26 @@ class News(db.Model):
     __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.String(500))
+    phoneNumber = db.Column(db.Integer)
     requestNumber = db.Column(db.String)
     status = db.Column(db.String)#db.Enum(default=NewsStatusEnum.pending, nullable=False))
 
-    def __init__(self, id, message, requestNumber) -> None:
+    def __init__(self, id, message, phoneNumber,requestNumber) -> None:
         self.id = id
         self.message = message
+        self.phoneNumber = phoneNumber
         self.requestNumber = requestNumber
         self.status = 'pending'
     
-    def save(self):
+    def save(self) -> None:
         db.session.add(self)
         db.session.commit()
 
-    def json(self):
+    def json(self) -> dict:
         return {
             'id': self.id,
             'message': self.message,
+            'phoneNumber': self.phoneNumber,
             'requestNumber': self.requestNumber,
             'status': self.status
         }
