@@ -12,10 +12,9 @@ api = Api(handler_bp)
 #     __schema_type__ = ['string', 'null']
 #     __schema_example__ = 'nullable string'
 
-
-
 message_model = api.model('Message',{
     'message': fields.String,
+    'phoneNumber': fields.String,
     'requestNumber': fields.String
 })
 
@@ -24,8 +23,16 @@ class Create_Solicitacao(Resource):
     @api.expect(message_model)
     def post(self):
         msg = request.json['message']
-        data = News(id=12131,**request.json)
+        data = News(**request.json)
         data.save()
+        return {'Status':'OK', 'message':msg}, 200
+
+@api.route('/test', methods=['POST'])
+class Create_Solicitacao(Resource):
+    @api.expect(message_model)
+    def post(self):
+        msg = request.json
+        print(msg)
         return {'Status':'OK', 'message':msg}, 200
 
 @api.route('/list', methods=['GET'])
