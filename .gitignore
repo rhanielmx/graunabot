@@ -1,9 +1,12 @@
 env/
 grauna-env/
 .env
+.flaskenv
 
 *.db
 show_dbs.py
 __pycache__/
 
 migrations
+
+*.json
