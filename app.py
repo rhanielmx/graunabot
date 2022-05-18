@@ -6,6 +6,7 @@ from app.models import *
 def index():
     return 'Rhaniel2!'
 
+
 @app.before_first_request
 def create_db():
     db.create_all()

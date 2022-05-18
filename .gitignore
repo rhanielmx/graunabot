@@ -7,6 +7,4 @@ grauna-env/
 show_dbs.py
 __pycache__/
 
-migrations
-
 *.json
