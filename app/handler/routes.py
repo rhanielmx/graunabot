@@ -1,4 +1,5 @@
 
+from urllib import response
 from app import app, db
 from flask import Blueprint, request
 from flask_restx import Resource, Api, fields
@@ -31,14 +32,30 @@ class Create_Solicitacao(Resource):
 class Webhook(Resource):
     @api.expect(message_model)
     def post(self):
-        msg = request
-        print(msg)
-        body = request.body
-        url = body.queryResult.parameters['url']
-        if not url:
-            url = ''
-        data = News(message=body , phoneNumber='', requestNumber=url)
-        return {'Status':'OK', 'message':msg, 'body': body, 'url': url}, 200
+        msg = None
+        if not request:
+            msg = 'No request found'
+        try:
+            body = request.body
+        except AttributeError:
+            body = None
+            msg = 'No body found'
+        if body:
+            try:
+                url = body.queryResult.parameters['url']        
+            except AttributeError:
+                msg='No url found'
+
+        if not msg:
+            msg = f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve"
+
+        responseObj = {
+            "fulfillmentText": "Ok, I will open the link for you",
+            "fulfillmentMessages": [{"text":{"text":[msg]}}],
+            "source": "webhook-response"
+        }
+        #data = News(message=body , phoneNumber='', requestNumber=url)
+        return responseObj#{'Status':'OK', 'message':'msg', 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
 class ListNews(Resource):
