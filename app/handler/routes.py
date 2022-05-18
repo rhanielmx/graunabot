@@ -64,7 +64,7 @@ class Webhook(Resource):
 
         responseObj = {
             "fulfillmentText": "Ok, I will open the link for you",
-            "fulfillmentMessages": [{"text":{"text":[url]}}],
+            "fulfillmentMessages": [{"text":{"text":[msg]}}],
             "source": "webhook-response"
         }
         #data = News(message=msg, phoneNumber='', requestNumber=url)
