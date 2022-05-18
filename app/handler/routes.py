@@ -18,6 +18,19 @@ message_model = api.model('Message',{
     'requestNumber': fields.String
 })
 
+parameters_fields = api.model('Parameters',{
+    'url': fields.String,
+    'requestNumber': fields.String,
+})
+
+query_fields = api.model('QueryFields',{
+    'parameters': fields.Nested(parameters_fields),
+})
+
+query_model = api.model('Query',{
+    'queryResult': fields.Nested(query_fields),
+})
+
 @api.route('/new', methods=['POST'])
 class Create_Solicitacao(Resource):
     @api.expect(message_model)
@@ -29,22 +42,12 @@ class Create_Solicitacao(Resource):
 
 @api.route('/webhook', methods=['POST'])
 class Webhook(Resource):
-    @api.expect(message_model)
+    @api.expect(query_model)
     def post(self):
+        print(request.get_json(silent=True, force=True).get('queryResult'))
         msg = None
         url = None
-        # if not request:
-        #     msg = 'No request found'
-        # try:
-        #     body = request.body
-        # except AttributeError:
-        #     body = None
-        #     msg = 'No body found'
-        # if body:
-        #     try:
-        #         url = body.queryResult.parameters['url']        
-        #     except AttributeError:
-        #         msg='No url found'
+       
         try:
             req=request.get_json(silent=True, force=True)
         except Exception as e:
@@ -58,11 +61,21 @@ class Webhook(Resource):
         except Exception as e:
             msg = 'No url found'
         
+        try:
+            requestNumber = query_result.get('parameters').get('requestNumber')
+            data = News.query.filter_by(requestNumber=requestNumber).first()
+        except Exception as e:
+            msg = 'No url found'
+        
         if not msg:
-            msg = f"Iremos olhar o conteúdo de {url or ''} e lhe retornaremos em breve"
+            if url:
+                msg = f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve"
+            else:
+                msg = 'Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo'
 
+        
         responseObj = {
-            "fulfillmentText": "Ok, I will open the link for you",
+            "fulfillmentText": " ",
             "fulfillmentMessages": [{"text":{"text":[msg]}}],
             "source": "webhook-response"
         }

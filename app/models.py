@@ -80,7 +80,7 @@ class News(db.Model):
             'requestNumber': self.requestNumber,
             'status': self.status
         }
-
+    
     def __str__(self) -> str:
         return self.status
 
