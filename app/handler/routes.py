@@ -32,6 +32,7 @@ class Webhook(Resource):
     @api.expect(message_model)
     def post(self):
         msg = None
+        url = None
         if not request:
             msg = 'No request found'
         try:
@@ -44,21 +45,21 @@ class Webhook(Resource):
                 url = body.queryResult.parameters['url']        
             except AttributeError:
                 msg='No url found'
-        # try:
-        #     req=request.get_json(silent=True, force=True)
-        # except Exception as e:
-        #     msg = 'No request found'
-        # try:
-        #     query_result = req.get('queryResult')
-        # except Exception as e:
-        #     msg = 'No query result found'
-        # try:
-        #     url = query_result.get('parameters').get('url')
-        # except Exception as e:
-        #     msg = 'No url found'
+        try:
+            req=request.get_json(silent=True, force=True)
+        except Exception as e:
+            msg = 'No request found'
+        try:
+            query_result = req.get('queryResult')
+        except Exception as e:
+            msg = 'No query result found'
+        try:
+            url = query_result.get('parameters').get('url')
+        except Exception as e:
+            msg = 'No url found'
         
         if not msg:
-            msg = f"Iremos olhar o conteúdo de  e lhe retornaremos em breve"
+            msg = f"Iremos olhar o conteúdo de {url or ''} e lhe retornaremos em breve"
 
         responseObj = {
             "fulfillmentText": "Ok, I will open the link for you",
