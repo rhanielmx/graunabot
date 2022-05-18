@@ -33,18 +33,18 @@ class Webhook(Resource):
     def post(self):
         msg = None
         url = None
-        if not request:
-            msg = 'No request found'
-        try:
-            body = request.body
-        except AttributeError:
-            body = None
-            msg = 'No body found'
-        if body:
-            try:
-                url = body.queryResult.parameters['url']        
-            except AttributeError:
-                msg='No url found'
+        # if not request:
+        #     msg = 'No request found'
+        # try:
+        #     body = request.body
+        # except AttributeError:
+        #     body = None
+        #     msg = 'No body found'
+        # if body:
+        #     try:
+        #         url = body.queryResult.parameters['url']        
+        #     except AttributeError:
+        #         msg='No url found'
         try:
             req=request.get_json(silent=True, force=True)
         except Exception as e:
