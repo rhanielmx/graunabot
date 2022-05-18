@@ -67,7 +67,7 @@ class Webhook(Resource):
             "fulfillmentMessages": [{"text":{"text":[url]}}],
             "source": "webhook-response"
         }
-        data = News(message=msg, phoneNumber='', requestNumber=url)
+        #data = News(message=msg, phoneNumber='', requestNumber=url)
         return responseObj#{'Status':'OK', 'message':'msg', 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
