@@ -27,13 +27,17 @@ class Create_Solicitacao(Resource):
         data.save()
         return {'Status':'OK', 'message':msg}, 200
 
-@api.route('/test', methods=['POST'])
-class Create_Solicitacao(Resource):
+@api.route('/webhook', methods=['POST'])
+class Webhook(Resource):
     @api.expect(message_model)
     def post(self):
-        msg = request.json
+        msg = request
         print(msg)
-        return {'Status':'OK', 'message':msg}, 200
+        body = request.body
+        url = body.queryResult.parameters['url']
+        if not url:
+            url = ''
+        return {'Status':'OK', 'message':msg, 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
 class ListNews(Resource):

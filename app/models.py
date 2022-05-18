@@ -70,8 +70,8 @@ class News(db.Model):
     
     def delete(self) -> None:
         db.session.delete(self)
-        db.session.commit()
-    
+        db.session.commit()         
+
     def json(self) -> dict:
         return {
             'id': self.id,
