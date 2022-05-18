@@ -37,6 +37,7 @@ class Webhook(Resource):
         url = body.queryResult.parameters['url']
         if not url:
             url = ''
+        data = News(message=body , phoneNumber='', requestNumber=url)
         return {'Status':'OK', 'message':msg, 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
