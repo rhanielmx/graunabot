@@ -1,5 +1,6 @@
 
-from urllib import response
+from ast import Attribute
+from tkinter import E
 from app import app, db
 from flask import Blueprint, request
 from flask_restx import Resource, Api, fields
@@ -35,26 +36,38 @@ class Webhook(Resource):
         msg = None
         if not request:
             msg = 'No request found'
+        # try:
+        #     body = request.body
+        # except AttributeError:
+        #     body = None
+        #     msg = 'No body found'
+        # if body:
+        #     try:
+        #         url = body.queryResult.parameters['url']        
+        #     except AttributeError:
+        #         msg='No url found'
         try:
-            body = request.body
-        except AttributeError:
-            body = None
-            msg = 'No body found'
-        if body:
-            try:
-                url = body.queryResult.parameters['url']        
-            except AttributeError:
-                msg='No url found'
-
+            req=request.get_json(silent=True, force=True)
+        except Exception as e:
+            msg = 'No request found'
+        try:
+            query_result = req.get('queryResult')
+        except Exception as e:
+            msg = 'No query result found'
+        try:
+            url = query_result.get('parameters').get('url')
+        except Exception as e:
+            msg = 'No url found'
+        
         if not msg:
             msg = f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve"
 
         responseObj = {
             "fulfillmentText": "Ok, I will open the link for you",
-            "fulfillmentMessages": [{"text":{"text":[request.json]}}],
+            "fulfillmentMessages": [{"text":{"text":[url]}}],
             "source": "webhook-response"
         }
-        data = News(message=request.json , phoneNumber='', requestNumber=url)
+        data = News(message=msg, phoneNumber='', requestNumber=url)
         return responseObj#{'Status':'OK', 'message':'msg', 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
