@@ -51,6 +51,7 @@ class Webhook(Resource):
        
         try:
             req=request.get_json(silent=True, force=True)
+            print(req)
         except Exception as e:
             msgs.append('No request found')
         try:
@@ -65,6 +66,8 @@ class Webhook(Resource):
         
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
+            print(type(requestNumber))
+            requestNumber = str(int(requestNumber))
             data = News.query.filter_by(requestNumber=requestNumber).first()
             if data:
                 if data.status == 'Pending':
