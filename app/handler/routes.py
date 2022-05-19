@@ -99,7 +99,7 @@ class Webhook(Resource):
         if not url and not requestNumber:
             msgs.append('Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo ou o número de uma solicitação.')
                 
-        fullfillmentMessages = f'{[{"text":{"text":[msg]}} for msg in msgs]}'
+        #fullfillmentMessages = f'{[{"text":{"text":[msg]}} for msg in msgs]}'
         # print('msgs')
         # print(msgs)
         # print('fullfillmentMessages')
@@ -107,7 +107,7 @@ class Webhook(Resource):
 
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": [{"text":{"text":[msgs]}}],
+            "fulfillmentMessages": [{"text":{"text":msgs}}],
             "source": "webhook-response"
         }
 
