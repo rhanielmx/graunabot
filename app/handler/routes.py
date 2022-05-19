@@ -94,9 +94,10 @@ class Webhook(Resource):
             url = query_result.get('parameters').get('url')
             if url:
                 if not requestNumber:
-                    msgs.append(f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve")
-                    data = News(message=message, phoneNumber='', requestNumber=url)
+                    data = News(message=message, requestNumber='string', url=url)
                     data.save()                    
+                    msgs.append(f"Iremos olhar o conteúdo de {url} e atualizaremos em nosso banco de dados.")
+                    msgs.append(f"Você pode consultar a sua solicitação com o número de pedido {data.requestNumber}")
         except Exception as e:
             print(e)
 
@@ -111,7 +112,7 @@ class Webhook(Resource):
 
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": [{"text":{"text":msgs}},{"text":{"text":msgs}}],
+            "fulfillmentMessages": [{"text":{"text":[msg]}} for msg in msgs],
             "source": "webhook-response"
         }
 
