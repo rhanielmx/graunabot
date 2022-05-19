@@ -86,7 +86,7 @@ class Webhook(Resource):
             if url:
                 if not requestNumber:
                     msgs.append(f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve")
-                    data = News(message=json.dumps(req), phoneNumber='', requestNumber=url)
+                    data = News(message=str(req.keys()), phoneNumber='', requestNumber=url)
                     data.save()                    
         except Exception as e:
             print(e)
