@@ -44,15 +44,13 @@ class NewsStatusEnum(enum.Enum):
 class News(db.Model):
     __tablename__ = 'news'
     id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(500))
-    requestNumber = db.Column(db.String)
+    message = db.Column(db.String)
     url = db.Column(db.String)
     response = db.Column(db.String)
     status = db.Column(db.String)#db.Enum(default=NewsStatusEnum.pending, nullable=False))
 
-    def __init__(self, message, requestNumber, url) -> None:
+    def __init__(self, message, url) -> None:
         self.message = message
-        self.requestNumber = requestNumber
         self.url = url
         self.response = None
         self.status = 'Pending'
@@ -76,7 +74,6 @@ class News(db.Model):
         return {
             'id': self.id,
             'message': self.message,
-            'requestNumber': self.requestNumber,
             'url': self.url,
             'response': self.response,
             'status': self.status
@@ -87,4 +84,4 @@ class News(db.Model):
         return self.status
 
     def __repr__(self) -> str:
-        return f"Pedido: {self.requestNumber}, Status: {self.status}"
+        return f"Pedido: {self.id}, Status: {self.status}"

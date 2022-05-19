@@ -68,24 +68,22 @@ class Webhook(Resource):
             message = query_result.get('queryText')
         except Exception as e:
             print(e)
-            
-        print('query_result')
-        print(query_result)
-        
+                  
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
             requestNumber = str(int(requestNumber))
-            data = News.query.filter_by(requestNumber=requestNumber).first()
+            data = News.query.filter_by(id=requestNumber).first()
             if data:
                 if data.status == 'Pending':
-                    msgs.append('Your request is pending! Try again later.')
+                    msgs.append('Essa solicitação ainda está sendo analisada. Por favor, solicite novamente mais tarde!')
                 else:
-                    msgs.append(f"We have verified your request. It is: {data.status}")
-                    msgs.append(data.response if data.response else 'No response found')
-                    msgs.append("Thank you for using our service.")
+                    msgs.append(f"Nós analisamos a sua solicitação. Ela é: {data.status}")
+                    if data.response:
+                        msgs.append(data.response)
+                    msgs.append("Obrigado por usar o nosso serviço.")
             else:
                 if requestNumber:
-                    msgs.append('No request found with this number')
+                    msgs.append('Não encontrei solicitação com esse número. Você tem certeza de que digitou o número correto?')
         except Exception as e:
             print(e)
             
@@ -94,10 +92,10 @@ class Webhook(Resource):
             url = query_result.get('parameters').get('url')
             if url:
                 if not requestNumber:
-                    data = News(message=message, requestNumber='string', url=url)
+                    data = News(message=message, url=url)
                     data.save()                    
                     msgs.append(f"Iremos olhar o conteúdo de {url} e atualizaremos em nosso banco de dados.")
-                    msgs.append(f"Você pode consultar a sua solicitação com o número de pedido {data.requestNumber}")
+                    msgs.append(f"Você pode consultar a sua solicitação com o número de pedido {data.id}")
         except Exception as e:
             print(e)
 
