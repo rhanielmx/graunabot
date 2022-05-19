@@ -10,8 +10,6 @@ Ela é o Trabalho de Conclusão de Curso de Clarice Nascimento ([@anaclaricen](h
 
 A Graúna é uma ave comum do Ceará. Ela também é conhecida como assum-preto e cupido.
 
-A Graúna é uma ave comum do Ceará. Ela também é conhecida como assum-preto e cupido.
-
 🗞 No mundo jornalístico, a Graúna é um personagem do cartunista brasileiro Henfil. Nordestina e analfabeta, ela denunciava a fome e a ditadura militar.
 
 Na música, Luiz Gonzaga falou sobre o canto melancólico da ave. “Mas assum-preto, cego dos oio. Não vendo a luz, ai, canta de dor”.
