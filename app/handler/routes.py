@@ -107,7 +107,7 @@ class Webhook(Resource):
 
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": {"text":{"text":[msgs]}},
+            "fulfillmentMessages": [{"text":{"text":[msgs]}},{"text":{"text":[msgs[1]]}}],
             "source": "webhook-response"
         }
 
