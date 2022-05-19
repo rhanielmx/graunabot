@@ -47,6 +47,7 @@ class Webhook(Resource):
     @api.expect(query_model)
     def post(self):
         msgs = []
+        message = None
         url = None
        
         try:
@@ -64,9 +65,12 @@ class Webhook(Resource):
             msgs.append('No url found')
 
         try:
-            message = query_result.get('parameters').get('queryText')
+            message = query_result.get('queryText')
         except Exception as e:
             print(e)
+            
+        print('query_result')
+        print(query_result)
         
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
@@ -107,7 +111,7 @@ class Webhook(Resource):
 
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": [{"text":{"text":msgs}}],
+            "fulfillmentMessages": [{"text":{"text":msgs}},{"text":{"text":msgs}}],
             "source": "webhook-response"
         }
 
