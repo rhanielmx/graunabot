@@ -1,4 +1,6 @@
 
+import json
+import re
 from app import app, db
 from flask import Blueprint, request
 from flask_restx import Resource, Api, fields
@@ -44,42 +46,62 @@ class Create_Solicitacao(Resource):
 class Webhook(Resource):
     @api.expect(query_model)
     def post(self):
-        print(request.get_json(silent=True, force=True).get('queryResult'))
-        msg = None
+        msgs = []
         url = None
        
         try:
             req=request.get_json(silent=True, force=True)
         except Exception as e:
-            msg = 'No request found'
+            msgs.append('No request found')
         try:
             query_result = req.get('queryResult')
         except Exception as e:
-            msg = 'No query result found'
+            msgs.append('No query result found')
+
         try:
             url = query_result.get('parameters').get('url')
         except Exception as e:
-            msg = 'No url found'
+            msgs.append('No url found')
         
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
             data = News.query.filter_by(requestNumber=requestNumber).first()
-        except Exception as e:
-            msg = 'No url found'
-        
-        if not msg:
-            if url:
-                msg = f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve"
+            if data:
+                if data.status == 'Pending':
+                    msgs.append('Your request is pending! Try again later.')
+                else:
+                    msgs.append(f"We have verified your request. It is: {data.status}")
+                    msgs.append(data.response if data.response else 'No response found')
+                    msgs.append("Thank you for using our service.")
             else:
-                msg = 'Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo'
+                if requestNumber:
+                    msgs.append('No request found with this number')
+        except Exception as e:
+            print(e)
+            
 
+        try:
+            url = query_result.get('parameters').get('url')
+            print(url)
+            if url:
+                if not requestNumber:
+                    msgs.append(f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve")
+                    data = News(message=json.dumps(req), phoneNumber='', requestNumber=url)
+                    data.save()                    
+        except Exception as e:
+            print(e)
+
+        if not url and not requestNumber:
+            msgs.append('Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo ou o número de uma solicitação.')
+                
         
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": [{"text":{"text":[msg]}}],
+            "fulfillmentMessages": [{"text":{"text":msgs}}],
             "source": "webhook-response"
         }
-        #data = News(message=msg, phoneNumber='', requestNumber=url)
+
+        
         return responseObj#{'Status':'OK', 'message':'msg', 'body': body, 'url': url}, 200
 
 @api.route('/list', methods=['GET'])
