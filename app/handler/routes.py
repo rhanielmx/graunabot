@@ -1,11 +1,8 @@
-
-import json
-import re
 from app import app, db
 from flask import Blueprint, request
 from flask_restx import Resource, Api, fields
 
-from app.models import News
+from app.models import Solicitation
 
 handler_bp = Blueprint('handler',__name__)
 api = Api(handler_bp)
@@ -16,8 +13,7 @@ api = Api(handler_bp)
 
 message_model = api.model('Message',{
     'message': fields.String,
-    'phoneNumber': fields.String,
-    'requestNumber': fields.String
+    'url': fields.String,
 })
 
 parameters_fields = api.model('Parameters',{
@@ -38,7 +34,7 @@ class Create_Solicitacao(Resource):
     @api.expect(message_model)
     def post(self):
         msg = request.json['message']
-        data = News(**request.json)
+        data = Solicitation(**request.json)
         data.save()
         return {'Status':'OK', 'message':msg}, 200
 
@@ -72,7 +68,7 @@ class Webhook(Resource):
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
             requestNumber = str(int(requestNumber))
-            data = News.query.filter_by(id=requestNumber).first()
+            data = Solicitation.query.filter_by(id=requestNumber).first()
             if data:
                 if data.status == 'Pending':
                     msgs.append('Essa solicitação ainda está sendo analisada. Por favor, solicite novamente mais tarde!')
@@ -92,7 +88,7 @@ class Webhook(Resource):
             url = query_result.get('parameters').get('url')
             if url:
                 if not requestNumber:
-                    data = News(message=message, url=url)
+                    data = Solicitation(message=message, url=url)
                     data.save()                    
                     msgs.append(f"Iremos olhar o conteúdo de {url} e atualizaremos em nosso banco de dados.")
                     msgs.append(f"Você pode consultar a sua solicitação com o número de pedido {data.id}")
@@ -115,16 +111,21 @@ class Webhook(Resource):
         }
 
         
-        return responseObj#{'Status':'OK', 'message':'msg', 'body': body, 'url': url}, 200
+        return responseObj, 200
 
 @api.route('/list', methods=['GET'])
 class ListNews(Resource):
     def get(self):
-        data = News.query.all()
+        data = Solicitation.query.all()
         return {'Status':'OK', 'News':[d.json() for d in data]}, 200
 
 @api.route('/list/<int:id>', methods=['GET'])
 class ListNews(Resource):
     def get(self, id):
-        data = News.query.filter_by(id=id).first()
-        return {'Status':'OK', 'News':data.json()}, 200
+        solicitation = Solicitation.query.filter_by(id=id).first()
+        if solicitation:
+            data = solicitation.json()
+        else:
+            data = []
+
+        return {'Status':'OK', 'Solicitation':data}, 200
