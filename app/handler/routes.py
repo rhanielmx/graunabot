@@ -63,10 +63,14 @@ class Webhook(Resource):
             url = query_result.get('parameters').get('url')
         except Exception as e:
             msgs.append('No url found')
+
+        try:
+            message = query_result.get('parameters').get('queryText')
+        except Exception as e:
+            print(e)
         
         try:
             requestNumber = query_result.get('parameters').get('requestNumber')
-            print(type(requestNumber))
             requestNumber = str(int(requestNumber))
             data = News.query.filter_by(requestNumber=requestNumber).first()
             if data:
@@ -89,7 +93,7 @@ class Webhook(Resource):
             if url:
                 if not requestNumber:
                     msgs.append(f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve")
-                    data = News(message=str(req.keys()), phoneNumber='', requestNumber=url)
+                    data = News(message=message, phoneNumber='', requestNumber=url)
                     data.save()                    
         except Exception as e:
             print(e)
@@ -97,10 +101,10 @@ class Webhook(Resource):
         if not url and not requestNumber:
             msgs.append('Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo ou o número de uma solicitação.')
                 
-        
+        fullfillmentMessages = f"{[{'text':{'text':[msg]}} for msg in msgs]}"
         responseObj = {
             "fulfillmentText": " ",
-            "fulfillmentMessages": [{"text":{"text":msgs}}],
+            "fulfillmentMessages": fullfillmentMessages,
             "source": "webhook-response"
         }
 
