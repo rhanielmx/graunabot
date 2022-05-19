@@ -51,7 +51,6 @@ class Webhook(Resource):
        
         try:
             req=request.get_json(silent=True, force=True)
-            print(req)
         except Exception as e:
             msgs.append('No request found')
         try:
@@ -89,7 +88,6 @@ class Webhook(Resource):
 
         try:
             url = query_result.get('parameters').get('url')
-            print(url)
             if url:
                 if not requestNumber:
                     msgs.append(f"Iremos olhar o conteúdo de {url} e lhe retornaremos em breve")
@@ -102,6 +100,11 @@ class Webhook(Resource):
             msgs.append('Não conseguimos identificar o que você deseja! Tente nos enviando um link para que possamos verificar o conteúdo ou o número de uma solicitação.')
                 
         fullfillmentMessages = f"{[{'text':{'text':[msg]}} for msg in msgs]}"
+        print('msgs')
+        print(msgs)
+        print('fullfillmentMessages')
+        print(fullfillmentMessages)
+        
         responseObj = {
             "fulfillmentText": " ",
             "fulfillmentMessages": fullfillmentMessages,
