@@ -106,19 +106,21 @@ class Webhook(Resource):
             if url:
                 if not requestNumber:
                     data = Solicitation(message=message, url=url)
-                    data.save()                    
-                    msgs.append(f"""Sabia que você mesmo pode fazer uma checagem inicial? 🤔
-
-                                Confira como descobrir se um link é verdadeiro:
-
-                                💻 Veja se o link corresponde a um site de confiança e credibilidade;
-                                ⌨️ Veja se o link possui critérios de segurança como “https” no início;
-                                🔎 Procure quem fez a matéria e pesquise o nome do jornalista que assinou. 
-
-                                Enquanto isso, estou trabalhando e checando seu pedido 🕵🏽‍♀️
-
-                                Você pode consultar a sua solicitação com o número de pedido: {data.id}
-                            """)
+                    data.save()
+                    msgs.append("Olá, essa é uma mensagem automática. Já recebi sua solicitação e trago uma resposta assim que possível 😉")                    
+                    msgs.append((                        
+                                "Sabia que você mesmo pode fazer uma checagem inicial? 🤔"
+                                "\n"
+                                 "Confira como descobrir se um link é verdadeiro:"
+                                "\n"
+                                "💻 Veja se o link corresponde a um site de confiança e credibilidade;"
+                                "⌨️ Veja se o link possui critérios de segurança como “https” no início;"
+                                "🔎 Procure quem fez a matéria e pesquise o nome do jornalista que assinou. "
+                                "\n"
+                                "Enquanto isso, estou trabalhando e checando seu pedido 🕵🏽‍♀️"
+                                )
+                    )                               
+                    msgs.append("Você pode consultar a sua solicitação com o número de pedido: {data.id}")
         except Exception as e:
             print(e)
 
