@@ -82,18 +82,19 @@ class Webhook(Resource):
                     msgs.append(f"Eu e minha equipe checamos a informação que você nos enviou e aqui está o resultado: Esse link é {data.status}")
                     if data.response:
                         msgs.append(data.response)
-                    msgs.append("""
-                        Sua checagem foi solicitada às <start-time> e respondida às <response-time>. 
+                    msgs.append((
+                        f"Sua checagem foi solicitada às <start-time> e respondida às <response-time>.\n"
+                        "\n"
+                        "O que você achou do atendimento? 💬\n"
+                        "\n"
+                        "Ajude-nos a melhorar o meu funcionamento!\n" 
+                        "\n"
+                        "Responda o formulário e conte-nos sobre sua experiência com a Ana, a robô que analisa 🕵🏽‍♀️\n"
+                        "\n"
+                        "<url-do-formulario>\n"
+                        
 
-                        O que você achou do atendimento? 💬
-
-                        Ajude-nos a melhorar o meu funcionamento! 
-
-                        Responda o formulário e conte-nos sobre sua experiência com a Ana, a robô que analisa 🕵🏽‍♀️
-
-                        <url-do-site>
-
-                    """)
+                    ))
             else:
                 if requestNumber:
                     msgs.append('Não encontrei solicitação com esse número. Você tem certeza de que digitou o número correto?')
@@ -109,18 +110,18 @@ class Webhook(Resource):
                     data.save()
                     msgs.append("Olá, essa é uma mensagem automática. Já recebi sua solicitação e trago uma resposta assim que possível 😉")                    
                     msgs.append((                        
-                                "Sabia que você mesmo pode fazer uma checagem inicial? 🤔"
+                                "Sabia que você mesmo pode fazer uma checagem inicial? 🤔\n"
                                 "\n"
-                                 "Confira como descobrir se um link é verdadeiro:"
+                                 "Confira como descobrir se um link é verdadeiro:\n"
                                 "\n"
-                                "💻 Veja se o link corresponde a um site de confiança e credibilidade;"
-                                "⌨️ Veja se o link possui critérios de segurança como “https” no início;"
-                                "🔎 Procure quem fez a matéria e pesquise o nome do jornalista que assinou. "
+                                "💻 Veja se o link corresponde a um site de confiança e credibilidade;\n"
+                                "⌨️ Veja se o link possui critérios de segurança como “https” no início;\n"
+                                "🔎 Procure quem fez a matéria e pesquise o nome do jornalista que assinou.\n"
                                 "\n"
                                 "Enquanto isso, estou trabalhando e checando seu pedido 🕵🏽‍♀️"
                                 )
                     )                               
-                    msgs.append("Você pode consultar a sua solicitação com o número de pedido: {data.id}")
+                    msgs.append(f"Você pode consultar a sua solicitação com o número de pedido: {data.id}")
         except Exception as e:
             print(e)
 
