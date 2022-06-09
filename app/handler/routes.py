@@ -7,9 +7,17 @@ from app.models import Solicitation
 handler_bp = Blueprint('handler',__name__)
 api = Api(handler_bp)
 
-# class NullableString(fields.String):
-#     __schema_type__ = ['string', 'null']
-#     __schema_example__ = 'nullable string'
+selos_map = {
+    '0': 'Pendente',
+    '1': 'Conteúdo genuíno',
+    '2': 'Sátira ou paródia',
+    '3': 'Conexão falsa',
+    '4': 'Conteúdo enganoso',
+    '5': 'Contexto falso',
+    '6': 'Conteúdo manipulado',
+    '7': 'Conteúdo exagerado',
+    '8': 'Conteúdo fabricado'
+}
 
 message_model = api.model('Message',{
     'message': fields.String,
@@ -70,7 +78,7 @@ class Webhook(Resource):
             requestNumber = str(int(requestNumber))
             data = Solicitation.query.filter_by(id=requestNumber).first()
             if data:
-                if data.status == 'Pending':
+                if data.status == '0':
                     msgs.append((
                         """Oi 👋🏽\n"""
                         """\n"""
@@ -79,11 +87,11 @@ class Webhook(Resource):
                         """Acesse nosso site e veja outras checagens que já foram feitas: <url-do-site>\n"""
                     ))
                 else:
-                    msgs.append(f"Eu e minha equipe checamos a informação que você nos enviou e aqui está o resultado: Esse link é {data.status}")
+                    msgs.append(f"Eu e minha equipe checamos a informação que você nos enviou e aqui está o resultado: {selos_map[data.status]}")
                     if data.response:
                         msgs.append(data.response)
                     msgs.append((
-                        f"Sua checagem foi solicitada às {data.created_at} e respondida às {data.responded_at}.\n"
+                        f"Sua checagem foi solicitada em {data.created_at.strftime('%d/%m/%Y às %H:%M')} e respondida em {data.responded_at.strftime('%d/%m/%Y às %H:%M')}.\n"
                         "\n"
                         "O que você achou do atendimento? 💬\n"
                         "\n"
