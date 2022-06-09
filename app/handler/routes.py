@@ -71,19 +71,19 @@ class Webhook(Resource):
             data = Solicitation.query.filter_by(id=requestNumber).first()
             if data:
                 if data.status == 'Pending':
-                    msgs.append("""
-                        Oi 👋🏽
-
-                        Você solicitou uma checagem e estou trabalhando nisso! 🕵🏽‍♀️
-
-                        Acesse nosso site e veja outras checagens que já foram feitas: <url-do-site>
-                    """)
+                    msgs.append((
+                        """Oi 👋🏽\n"""
+                        """\n"""
+                        """Você solicitou uma checagem e estou trabalhando nisso! 🕵🏽‍♀️\n"""
+                        """\n"""
+                        """Acesse nosso site e veja outras checagens que já foram feitas: <url-do-site>\n"""
+                    ))
                 else:
                     msgs.append(f"Eu e minha equipe checamos a informação que você nos enviou e aqui está o resultado: Esse link é {data.status}")
                     if data.response:
                         msgs.append(data.response)
                     msgs.append((
-                        f"Sua checagem foi solicitada às <start-time> e respondida às <response-time>.\n"
+                        f"Sua checagem foi solicitada às {data.created_at} e respondida às {data.responded_at}.\n"
                         "\n"
                         "O que você achou do atendimento? 💬\n"
                         "\n"
@@ -91,9 +91,7 @@ class Webhook(Resource):
                         "\n"
                         "Responda o formulário e conte-nos sobre sua experiência com a Ana, a robô que analisa 🕵🏽‍♀️\n"
                         "\n"
-                        "<url-do-formulario>\n"
-                        
-
+                        "<url-do-formulario>\n"                     
                     ))
             else:
                 if requestNumber:
@@ -101,7 +99,6 @@ class Webhook(Resource):
         except Exception as e:
             print(e)
             
-
         try:
             url = query_result.get('parameters').get('url')
             if url:

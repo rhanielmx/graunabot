@@ -1,6 +1,7 @@
 from sqlalchemy import delete
 from app import db
-import enum
+
+from datetime import datetime, timedelta
 
 # class User(db.Model):
 #     __tablename__ = 'users'
@@ -37,11 +38,6 @@ import enum
 #         'polymorphic_on': type
 #     }
 
-class SolicitationStatusEnum(enum.Enum):
-    pending='pending'
-    real='real'
-    fake='fake'
-
 class Solicitation(db.Model):
     __tablename__ = 'solicitations'
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +45,9 @@ class Solicitation(db.Model):
     url = db.Column(db.String)
     response = db.Column(db.String)
     status = db.Column(db.String)#db.Enum(default=NewsStatusEnum.pending, nullable=False))
+    created_at = db.Column(db.DateTime)
+    responded_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
 
     def __init__(self, message, url) -> None:
@@ -57,12 +56,18 @@ class Solicitation(db.Model):
         self.response = None
         self.status = 'Pending'
         self.category_id = 1
+        self.created_at = datetime.utcnow() - timedelta(hours=3)
+        self.responded_at = None
+        self.updated_at = None
 
     def set_category(self, category_id):
         self.category_id = category_id
         self.save()      
     
     def save(self) -> None:
+        if self.responded_at is None:
+            self.responded_at = datetime.utcnow() - timedelta(hours=3)
+        self.updated_at = datetime.utcnow() - timedelta(hours=3)
         db.session.add(self)
         db.session.commit()
 
